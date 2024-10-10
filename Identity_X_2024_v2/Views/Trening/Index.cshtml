@@ -24,9 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Czas)
             </th>
-            <th>
+           @*  <th>
                 @Html.DisplayNameFor(model => model.TreningUser)
-            </th>
+            </th> *@
             <th></th>
         </tr>
     </thead>
@@ -34,7 +34,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Sport.SportId)
+                @Html.DisplayFor(modelItem => item.Sport.Nazwa)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Dystans)
@@ -45,9 +45,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Czas)
             </td>
-            <td>
+            @* <td>
                 @Html.DisplayFor(modelItem => item.TreningUser.Id)
-            </td>
+            </td> *@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.TreningId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.TreningId">Details</a> |

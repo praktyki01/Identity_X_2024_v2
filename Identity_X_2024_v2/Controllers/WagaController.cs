@@ -83,7 +83,7 @@ namespace Identity_X_2024_v2.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["WagaUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", waga.WagaUserId);
+            //ViewData["WagaUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", waga.WagaUserId);
             return View(waga);
         }
 
@@ -105,7 +105,7 @@ namespace Identity_X_2024_v2.Controllers
             if (waga.WagaUserId != user.Id)
                 return RedirectToAction("Index");
             
-            ViewData["WagaUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", waga.WagaUserId);
+            //ViewData["WagaUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", waga.WagaUserId);
             return View(waga);
         }
 
@@ -145,7 +145,7 @@ namespace Identity_X_2024_v2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["WagaUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", waga.WagaUserId);
+            //ViewData["WagaUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", waga.WagaUserId);
             return View(waga);
         }
 

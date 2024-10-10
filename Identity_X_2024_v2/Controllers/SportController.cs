@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Identity_X_2024_v2.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin")]
     public class SportController : Controller
     {
         private readonly ApplicationDbContext _context;

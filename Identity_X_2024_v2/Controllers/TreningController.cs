@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Identity_X_2024_v2.Data;
 using Identity_X_2024_v2.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Identity_X_2024_v2.Controllers
 {
@@ -15,16 +16,21 @@ namespace Identity_X_2024_v2.Controllers
     public class TreningController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public TreningController(ApplicationDbContext context)
+        public TreningController(ApplicationDbContext context,UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Trening
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Trening.Include(t => t.Sport).Include(t => t.TreningUser);
+            // Ograniczenie wyświetlania danych do zalogowanego użytkownika
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var applicationDbContext = _context.Trening
+                .Include(t => t.Sport).Include(t => t.TreningUser).Where(u=>u.TreningUserId==user.Id);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -44,7 +50,10 @@ namespace Identity_X_2024_v2.Controllers
             {
                 return NotFound();
             }
-
+            // Zablokowanie możliwości wyświetlenia danych innych niż zalogowanego użytkownika
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (trening.TreningUserId != user.Id)
+                return RedirectToAction("Index");
             return View(trening);
         }
 
@@ -65,12 +74,17 @@ namespace Identity_X_2024_v2.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Sprawdzenie czy towrzymy zalogowanego użytkownika
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                if (trening.TreningUserId!= user.Id)
+                    return RedirectToAction("Index");
+
                 _context.Add(trening);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["SportId"] = new SelectList(_context.Sport, "SportId", "Nazwa", trening.SportId);
-            ViewData["TreningUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", trening.TreningUserId);
+            //ViewData["TreningUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", trening.TreningUserId);
             return View(trening);
         }
 
@@ -87,8 +101,14 @@ namespace Identity_X_2024_v2.Controllers
             {
                 return NotFound();
             }
+
+            // Sprawdzenie czy edytujemy zalogowanego użytkownika.
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (trening.TreningUserId!= user.Id)
+                return RedirectToAction("Index");
+
             ViewData["SportId"] = new SelectList(_context.Sport, "SportId", "Nazwa", trening.SportId);
-            ViewData["TreningUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", trening.TreningUserId);
+            //ViewData["TreningUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", trening.TreningUserId);
             return View(trening);
         }
 
@@ -108,6 +128,10 @@ namespace Identity_X_2024_v2.Controllers
             {
                 try
                 {
+                    // Ograniczenie możliwości zapisania rekordu tylko dla zalogowanego użytkownika
+                    var user = await _userManager.GetUserAsync(HttpContext.User);
+                    if (trening.TreningUserId != user.Id)
+                        return RedirectToAction("Index");
                     _context.Update(trening);
                     await _context.SaveChangesAsync();
                 }
@@ -125,7 +149,7 @@ namespace Identity_X_2024_v2.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["SportId"] = new SelectList(_context.Sport, "SportId", "Nazwa", trening.SportId);
-            ViewData["TreningUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", trening.TreningUserId);
+            //ViewData["TreningUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", trening.TreningUserId);
             return View(trening);
         }
 
@@ -145,6 +169,11 @@ namespace Identity_X_2024_v2.Controllers
             {
                 return NotFound();
             }
+
+            // Zablokowanie możliwości usunięcia danych innego użytkownika
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (trening.TreningUserId != user.Id)
+                return RedirectToAction("Index");
 
             return View(trening);
         }
