@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Identity_X_2024_v2.Data;
 using Identity_X_2024_v2.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Identity_X_2024_v2.Controllers
 {
+    [Authorize]
     public class TreningController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -49,7 +51,7 @@ namespace Identity_X_2024_v2.Controllers
         // GET: Trening/Create
         public IActionResult Create()
         {
-            ViewData["SportId"] = new SelectList(_context.Sport, "SportId", "SportId");
+            ViewData["SportId"] = new SelectList(_context.Sport, "SportId", "Nazwa");
             ViewData["TreningUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id");
             return View();
         }
@@ -67,7 +69,7 @@ namespace Identity_X_2024_v2.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SportId"] = new SelectList(_context.Sport, "SportId", "SportId", trening.SportId);
+            ViewData["SportId"] = new SelectList(_context.Sport, "SportId", "Nazwa", trening.SportId);
             ViewData["TreningUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", trening.TreningUserId);
             return View(trening);
         }
@@ -85,7 +87,7 @@ namespace Identity_X_2024_v2.Controllers
             {
                 return NotFound();
             }
-            ViewData["SportId"] = new SelectList(_context.Sport, "SportId", "SportId", trening.SportId);
+            ViewData["SportId"] = new SelectList(_context.Sport, "SportId", "Nazwa", trening.SportId);
             ViewData["TreningUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", trening.TreningUserId);
             return View(trening);
         }
@@ -122,7 +124,7 @@ namespace Identity_X_2024_v2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SportId"] = new SelectList(_context.Sport, "SportId", "SportId", trening.SportId);
+            ViewData["SportId"] = new SelectList(_context.Sport, "SportId", "Nazwa", trening.SportId);
             ViewData["TreningUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", trening.TreningUserId);
             return View(trening);
         }

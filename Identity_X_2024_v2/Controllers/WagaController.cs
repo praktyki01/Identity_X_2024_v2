@@ -7,22 +7,32 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Identity_X_2024_v2.Data;
 using Identity_X_2024_v2.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using NuGet.Packaging.Signing;
 
 namespace Identity_X_2024_v2.Controllers
 {
+    [Authorize]
     public class WagaController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public WagaController(ApplicationDbContext context)
+        public WagaController(ApplicationDbContext context
+            , UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Waga
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Waga.Include(w => w.WagaUser);
+            // Ograniczenie wyświetlania danych do zalogowanego użytkownika
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var applicationDbContext = _context.Waga.Include(w => w.WagaUser).
+                Where(w => w.WagaUserId == user.Id);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -41,7 +51,10 @@ namespace Identity_X_2024_v2.Controllers
             {
                 return NotFound();
             }
-
+            // Zablokowanie możliwości wyświetlenia danych innych niż zalogowanego użytkownika
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (waga.WagaUserId != user.Id)
+                return RedirectToAction("Index");
             return View(waga);
         }
 
@@ -61,6 +74,11 @@ namespace Identity_X_2024_v2.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Sprawdzenie czy towrzymy zalogowanego użytkownika
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                if (waga.WagaUserId != user.Id)
+                    return RedirectToAction("Index");
+              
                 _context.Add(waga);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -82,6 +100,11 @@ namespace Identity_X_2024_v2.Controllers
             {
                 return NotFound();
             }
+            // Sprawdzenie czy edytujemy zalogowanego użytkownika.
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (waga.WagaUserId != user.Id)
+                return RedirectToAction("Index");
+            
             ViewData["WagaUserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", waga.WagaUserId);
             return View(waga);
         }
@@ -102,6 +125,10 @@ namespace Identity_X_2024_v2.Controllers
             {
                 try
                 {
+                    // Ograniczenie możliwości zapisania rekordu tylko dla zalogowanego użytkownika
+                    var user = await _userManager.GetUserAsync(HttpContext.User);
+                    if (waga.WagaUserId != user.Id)
+                        return RedirectToAction("Index");
                     _context.Update(waga);
                     await _context.SaveChangesAsync();
                 }
@@ -137,7 +164,10 @@ namespace Identity_X_2024_v2.Controllers
             {
                 return NotFound();
             }
-
+            // Zablokowanie możliwości usunięcia danych innego użytkownika
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (waga.WagaUserId != user.Id)
+                return RedirectToAction("Index");
             return View(waga);
         }
 
@@ -149,6 +179,10 @@ namespace Identity_X_2024_v2.Controllers
             var waga = await _context.Waga.FindAsync(id);
             if (waga != null)
             {
+                // Zablokowanie usunięcia danych innego użytkownika
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                if (waga.WagaUserId != user.Id)
+                    return RedirectToAction("Index");
                 _context.Waga.Remove(waga);
             }
 

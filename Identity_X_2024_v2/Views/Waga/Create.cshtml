@@ -1,4 +1,6 @@
 ﻿@model Identity_X_2024_v2.Models.Waga
+﻿@using Microsoft.AspNetCore.Identity;
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> _userManager
 
 @{
     ViewData["Title"] = "Create";
@@ -22,10 +24,11 @@
                 <input asp-for="Wartosc" class="form-control" />
                 <span asp-validation-for="Wartosc" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="WagaUserId" class="control-label"></label>
-                <select asp-for="WagaUserId" class ="form-control" asp-items="ViewBag.WagaUserId"></select>
-            </div>
+          @*    <div class="form-group">
+                 <label asp-for="WagaUserId" class="control-label"></label>
+                 <select asp-for="WagaUserId" class ="form-control" asp-items="ViewBag.WagaUserId"></select>
+             </div> *@
+            <input type="hidden" name="WagaUserId" value="@_userManager.GetUserId(User)" />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
