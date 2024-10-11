@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Identity_X_2024_v2.Models.Trening>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>           
+            <th>
+                @Html.DisplayNameFor(model => model.Dystans)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Data)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Czas)
+            </th>
+           <th>
+            @Html.DisplayNameFor(model => model.TreningUser)
+            </th>            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>               
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dystans)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Data)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Czas)
+                </td>
+                <td>
+                    @item.TreningUser.Nazwisko @item.TreningUser.Imie
+                </td>
+               
+            </tr>
+        }
+    </tbody>
+</table>

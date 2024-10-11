@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Identity_X_2024_v2.Models.Sport>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nazwa)
+            </th>                      
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="RankingNajTreningDysc" asp-controller="Ranking" asp-route-id="@item.SportId">
+                        @Html.DisplayFor(modelItem => item.Nazwa) <img src="@item.ImgUrl" width="250" height="150" />
+                    </a>
+                    
+                    @* <a href="/ranking/RankingNajTreningDysc/@item.SportId">
+                        @Html.DisplayFor(modelItem => item.Nazwa) <img src="@item.ImgUrl" width="250" height="150" />
+                    </a> *@
+                </td>                              
+            </tr>
+        }
+    </tbody>
+</table>
