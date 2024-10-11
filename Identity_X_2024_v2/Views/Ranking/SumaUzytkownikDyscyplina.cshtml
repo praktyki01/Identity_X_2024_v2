@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewData["Title"] = "SumaUzytkownikDyscyplina";
+}
+
+<h1>SumaUzytkownikDyscyplina</h1>
+<ul>
+@foreach (var wynik in ViewBag.Wyniki)
+{
+        <li>@wynik.Uzytkownik @wynik.DystansSuma</li>
+}
+</ul>
