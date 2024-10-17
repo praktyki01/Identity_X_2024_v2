@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Identity_X_2024_v2.Controllers
 {
+    //opis systemu Identity
+    //https://codewithmukesh.com/blog/user-management-in-aspnet-core-mvc/
     public class PermissionController : Controller
     {
         private readonly ApplicationDbContext _context;

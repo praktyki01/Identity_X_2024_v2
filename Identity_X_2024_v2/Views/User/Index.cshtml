@@ -1,0 +1,20 @@
+﻿@model Identity_X_2024_v2.ViewModels.UserViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+@Model.Imie<br/>
+@Model.Nazwisko
+<ul>
+    @foreach(var item in Model.ListaTreningow)
+    {
+        <li>@item.Data @item.Dystans</li>
+    }
+</ul>
+<ul>
+    @foreach (var item in Model.ListaWag)
+    {
+        <li>@item.Data @item.Wartosc</li>
+    }
+</ul>
+<h1>Index</h1>
+
